@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misi Spreadsheet — Menjodohkan</title>
+<style>
+:root{--ink:#26334a;--pink:#ff7eb6;--blue:#72c8ff;--mint:#8de5cf;--yellow:#ffdc78;--purple:#b6a1ff;--paper:#fffdf8}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff0f6,#eaf8ff 48%,#effff6);min-height:100vh}
+header{padding:30px 18px 24px;text-align:center;background:linear-gradient(120deg,#ffb7d5,#b9e6ff,#c5f5df);border-bottom:4px solid white}
+.kicker{display:inline-block;background:#fff;padding:7px 14px;border-radius:999px;font-size:.85rem;font-weight:800;letter-spacing:.04em}
+h1{font-size:clamp(2rem,5vw,3.5rem);margin:12px 0 6px;text-shadow:2px 3px 0 #fff}
+header p{margin:0;font-weight:600}
+.wrap{max-width:1120px;margin:22px auto;padding:0 16px 40px}
+.panel{background:#ffffffd9;border:2px solid #fff;border-radius:22px;padding:18px;box-shadow:0 8px 22px #4e6b8718;margin-bottom:18px}
+.toprow{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.field{flex:1;min-width:210px}
+label{display:block;font-weight:800;margin:0 0 6px}
+input[type=text]{width:100%;padding:12px 14px;border:2px solid #d9e6f3;border-radius:12px;font:inherit;background:white}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pill{padding:9px 13px;border-radius:12px;background:#f1f5ff;font-weight:800}
+.instructions{margin:0;line-height:1.55}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+h2{font-size:1.25rem;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+h2 span{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--yellow)}
+.item{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;background:#fff;border:2px solid #e8edf6;border-radius:14px;padding:10px;margin:9px 0;min-height:62px}
+.num{display:grid;place-items:center;background:#dff5ff;border-radius:10px;height:34px;font-weight:900}
+.item p{margin:0;line-height:1.35;font-size:.96rem}
+select{width:100%;padding:10px;border:2px solid #dce5f2;border-radius:10px;background:#fff;font:inherit;color:var(--ink);margin-top:7px}
+.answers .item{grid-template-columns:42px 1fr;background:#fff9e8;border-color:#ffedbd}
+.letter{display:grid;place-items:center;background:#ffe08a;border-radius:10px;height:34px;font-weight:900}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:13px;padding:12px 18px;font:inherit;font-weight:900;cursor:pointer;transition:transform .12s,filter .12s}
+button:hover{transform:translateY(-2px);filter:brightness(1.02)}
+.primary{background:#6b83f5;color:white;box-shadow:0 4px 0 #4b60ca}
+.secondary{background:#dff7ef;color:#205d50}
+.ghost{background:#ffe5f0;color:#84345b}
+#result{display:none;margin-top:16px;padding:16px;border-radius:16px;font-weight:800;line-height:1.5}
+#result.show{display:block}
+.good{background:#dcfaec;border:2px solid #8bdcb7}
+.mid{background:#fff2c8;border:2px solid #f1cf6b}
+.bad{background:#ffe2e7;border:2px solid #f2a0b1}
+footer{text-align:center;padding:10px 0 24px;font-size:.9rem;color:#60708b}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.panel{padding:14px}.item p{font-size:.92rem}}
+@media print{body{background:white}.actions,header .kicker{display:none}.panel{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">🌈 INFORMATIKA • BAB 2</div>
+  <h1>✨ Misi Spreadsheet ✨</h1>
+  <p>Tantangan Menjodohkan: Perangkat Lunak Pengolah Angka</p>
+</header>
+<main class="wrap">
+  <section class="panel">
+    <div class="toprow">
+      <div class="field">
+        <label for="student">👩‍🎓 Nama siswa</label>
+        <input id="student" type="text" placeholder="Tulis nama lengkapmu...">
+      </div>
+      <div class="field">
+        <label for="classroom">🏫 Kelas</label>
+        <input id="classroom" type="text" placeholder="Contoh: VII A">
+      </div>
+    </div>
+    <div class="stats">
+      <div class="pill">🧩 20 soal</div>
+      <div class="pill">⏱️ Kerjakan dengan teliti</div>
+      <div class="pill">🎯 Pilih satu jawaban untuk setiap soal</div>
+    </div>
+  </section>
+  <section class="panel">
+    <p class="instructions"><strong>📌 Petunjuk:</strong> Pilih jawaban yang paling tepat dari menu di setiap soal. Setelah selesai, tekan <strong>Periksa Jawaban</strong> untuk melihat skor. Kamu bisa memperbaiki jawaban lalu memeriksanya kembali.</p>
+  </section>
+  <div class="layout">
+    <section class="panel">
+      <h2><span>📝</span> Kolom A — Pernyataan</h2>
+      <div id="questions"></div>
+    </section>
+    <section class="panel answers">
+      <h2><span>💡</span> Kolom B — Pilihan Jawaban</h2>
+      <div id="choices"></div>
+    </section>
+  </div>
+  <section class="panel">
+    <div class="actions">
+      <button class="primary" onclick="checkAnswers()">✅ Periksa Jawaban</button>
+      <button class="secondary" onclick="showKey()">🔎 Lihat Kunci (setelah mencoba)</button>
+      <button class="ghost" onclick="resetQuiz()">🔄 Ulangi dari Awal</button>
+    </div>
+    <div id="result" role="status" aria-live="polite"></div>
+    <div id="keybox" style="display:none;margin-top:14px;line-height:1.7"></div>
+  </section>
+  <footer>💖 Semangat belajar! Data yang terkelola dengan baik membantu kita mengambil keputusan yang lebih tepat.</footer>
+</main>
+<script>
+const questions = [
+"Aplikasi untuk mengolah data berbentuk tabel.",
+"Contoh perangkat lunak pengolah angka buatan Microsoft.",
+"Buku kerja digital yang berisi beberapa worksheet.",
+"Lembar kerja tempat mengolah data.",
+"Tempat pertemuan antara baris dan kolom.",
+"Kumpulan beberapa cell yang dipilih bersama.",
+"Alamat cell yang dapat berubah saat rumus disalin.",
+"Alamat cell yang tetap saat rumus disalin.",
+"Data berupa huruf, kata, atau simbol.",
+"Data berupa nilai numerik yang dapat dihitung.",
+"Data yang menunjukkan tanggal.",
+"Data yang menunjukkan jam.",
+"Bagian untuk memasukkan atau melihat rumus.",
+"Digunakan untuk mengatur posisi teks dalam cell.",
+"Digunakan untuk mengubah jenis dan ukuran huruf.",
+"Digunakan untuk memberikan garis pembatas pada cell.",
+"Digunakan untuk memberikan warna atau pola pada cell.",
+"Fitur untuk membekukan baris agar tetap terlihat saat menggulir.",
+"Fitur untuk membekukan kolom agar tetap terlihat saat menggulir.",
+"Fitur untuk menampilkan data dalam bentuk diagram."
+];
+const options = [
+["A","Grafik/Chart"],["B","Cell"],["C","Workbook"],["D","Border"],["E","Worksheet"],
+["F","Relative Reference"],["G","Angka"],["H","Freeze First Column"],["I","Microsoft Excel"],
+["J","Fill"],["K","Formula Bar"],["L","Range"],["M","Text"],["N","Font"],
+["O","Absolute Reference"],["P","Waktu"],["Q","Spreadsheet"],["R","Freeze Top Row"],
+["S","Alignment"],["T","Tanggal"]
+];
+const correct = ["Q","I","C","E","B","L","F","O","M","G","T","P","K","S","N","D","J","R","H","A"];
+const qbox=document.getElementById("questions"), cbox=document.getElementById("choices");
+questions.forEach((q,i)=>{
+ const div=document.createElement("div");div.className="item";
+ div.innerHTML=`<div class="num">${i+1}</div><div><p>${q}</p><select id="q${i}" aria-label="Jawaban soal ${i+1}"><option value="">— Pilih jawaban —</option>${options.map(([k,v])=>`<option value="${k}">${k}. ${v}</option>`).join("")}</select></div>`;
+ qbox.appendChild(div);
+});
+options.forEach(([k,v])=>{
+ const div=document.createElement("div");div.className="item";
+ div.innerHTML=`<div class="letter">${k}</div><p>${v}</p>`;
+ cbox.appendChild(div);
+});
+function checkAnswers(){
+ let score=0,answered=0;
+ questions.forEach((_,i)=>{
+  const el=document.getElementById("q"+i);
+  el.style.borderColor="#dce5f2";
+  if(el.value) answered++;
+  if(el.value===correct[i]){score++;el.style.borderColor="#3bb982"}
+  else if(el.value){el.style.borderColor="#ed718b"}
+ });
+ const pct=Math.round(score/questions.length*100),res=document.getElementById("result");
+ res.className="show "+(pct>=80?"good":pct>=60?"mid":"bad");
+ const name=document.getElementById("student").value.trim();
+ const cls=document.getElementById("classroom").value.trim();
+ let msg=pct>=80?"Hebat sekali! Kamu menguasai materi ini 🎉":pct>=60?"Bagus! Periksa kembali beberapa jawabanmu 💪":"Tetap semangat! Pelajari lagi materi dan coba kembali 🌱";
+ res.innerHTML=`${msg}<br>Nama: ${escapeHtml(name||"Belum diisi")} ${cls?"• Kelas: "+escapeHtml(cls):""}<br>Skor: ${score} / 20 (${pct}%)<br>Terjawab: ${answered} dari 20 soal.`;
+}
+function showKey(){
+ const box=document.getElementById("keybox");
+ box.style.display=box.style.display==="none"?"block":"none";
+ box.innerHTML="<strong>🔐 Kunci jawaban:</strong><br>"+correct.map((a,i)=>`${i+1}. ${a} — ${options.find(o=>o[0]===a)[1]}`).join("<br>");
+}
+function resetQuiz(){
+ questions.forEach((_,i)=>{const el=document.getElementById("q"+i);el.value="";el.style.borderColor="#dce5f2"});
+ document.getElementById("student").value="";
+ document.getElementById("classroom").value="";
+ document.getElementById("result").className="";
+ document.getElementById("result").innerHTML="";
+ document.getElementById("keybox").style.display="none";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+</script>
+</body>
+</html>
